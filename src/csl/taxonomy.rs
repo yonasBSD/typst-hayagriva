@@ -453,7 +453,7 @@ impl EntryLike for Entry {
             NameVariable::Director => self
                 .bound_select(
                     &select!(
-                        (* > ("p":(Audio | Video)))
+                        (* > ("p":(Audio | Video))) | ("p":(Audio | Video))
                     ),
                     "p",
                 )
@@ -605,9 +605,10 @@ impl EntryLike for Entry {
 
                 !(is_periodical || is_collection)
             }
-            Kind::Chapter => {
-                select!(Chapter > (Book | Anthology | Proceedings)).matches(self)
-            }
+            Kind::Chapter => select!(
+                (Anthos > Anthology) | (Chapter > (Book | Anthology | Proceedings))
+            )
+            .matches(self),
             Kind::Entry | Kind::EntryDictionary | Kind::EntryEncyclopedia => {
                 if kind == Kind::EntryDictionary {
                     // TODO: We do not differentiate between dictionaries and other
